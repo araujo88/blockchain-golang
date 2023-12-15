@@ -22,13 +22,18 @@ func main() {
 			fmt.Println("Invalid difficulty input. Using default difficulty.")
 			blockchain = NewBlockchain(difficulty)
 		} else {
-			blockchain = NewBlockchain(uint64(difficulty))
+			blockchain, err = LoadBlockchainFromFile("blockchain.json")
+			if err != nil {
+				blockchain = NewBlockchain(difficulty)
+			}
 		}
 	}
 
-	var i = 0
+	var i = 1
 	for {
 		fmt.Printf("Mining block %d...\n", i)
 		blockchain.AddBlock(fmt.Sprintf("Block %d test data", i))
+		blockchain.SaveToFile("blockchain.json")
+		i++
 	}
 }
