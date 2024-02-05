@@ -13,10 +13,6 @@ func TestNewBlockchain(t *testing.T) {
 		t.Errorf("NewBlockchain should start with one genesis block, got %d", len(blockchain.Chain))
 	}
 
-	if blockchain.Difficulty != difficulty {
-		t.Errorf("NewBlockchain difficulty = %d; want %d", blockchain.Difficulty, difficulty)
-	}
-
 	if blockchain.Chain[0].Data != "Genesis Block" {
 		t.Errorf("Genesis block data incorrect, got %s, want Genesis Block", blockchain.Chain[0].Data)
 	}
@@ -49,8 +45,10 @@ func TestGetLastBlock(t *testing.T) {
 		t.Errorf("GetLastBlock returned nil on a new blockchain")
 	}
 
-	if lastBlock.Data != "Genesis Block" {
-		t.Errorf("GetLastBlock should return genesis block on new blockchain, got %s", lastBlock.Data)
+	if lastBlock != nil {
+		if lastBlock.Data != "Genesis Block" {
+			t.Errorf("GetLastBlock should return genesis block on new blockchain, got %s", lastBlock.Data)
+		}
 	}
 
 	blockchain.AddBlock("Test Block")

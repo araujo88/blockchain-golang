@@ -12,7 +12,7 @@ import (
 // TestNewBlock tests the NewBlock function.
 func TestNewBlock(t *testing.T) {
 	data := "test data"
-	block := NewBlock(0, data)
+	block := NewBlock(0, data, 1)
 
 	if block.Data != data {
 		t.Errorf("NewBlock data = %s; want %s", block.Data, data)
@@ -29,13 +29,12 @@ func TestNewBlock(t *testing.T) {
 
 // TestMineBlock tests the MineBlock function.
 func TestMineBlock(t *testing.T) {
-	block := NewBlock(0, "test data")
-	difficulty := uint64(1) // Setting a small difficulty for testing
+	block := NewBlock(0, "test data", 1)
 
-	block.MineBlock(difficulty)
+	block.MineBlock()
 
-	if !strings.HasPrefix(block.GetHash(), strings.Repeat("0", int(difficulty))) {
-		t.Errorf("MineBlock did not mine correctly with difficulty %d", difficulty)
+	if !strings.HasPrefix(block.GetHash(), strings.Repeat("0", int(block.GetDifficulty()))) {
+		t.Errorf("MineBlock did not mine correctly with difficulty %d", int(block.GetDifficulty()))
 	}
 
 	if block.Nonce <= 0 {
@@ -45,7 +44,7 @@ func TestMineBlock(t *testing.T) {
 
 // TestCalculateHash tests the calculateHash method.
 func TestCalculateHash(t *testing.T) {
-	block := NewBlock(0, "test data")
+	block := NewBlock(0, "test data", 4)
 	block.Nonce = 0
 	block.PreviousHash = "0000"
 	expectedHash := block.calculateHash()
@@ -63,7 +62,7 @@ func TestCalculateHash(t *testing.T) {
 
 // TestBlockImmutableTimestamp ensures that the timestamp of a block doesn't change.
 func TestBlockImmutableTimestamp(t *testing.T) {
-	block := NewBlock(0, "test data")
+	block := NewBlock(0, "test data", 0)
 	initialTimestamp := block.Timestamp
 
 	// Simulate some delay

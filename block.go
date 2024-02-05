@@ -14,15 +14,17 @@ type Block struct {
 	Data         string `json:"data"`
 	Hash         string `json:"hash"`
 	Nonce        int    `json:"nonce"`
+	Difficulty   uint64 `json:"difficulty"`
 	PreviousHash string `json:"previousHash,omitempty"` // Omit if empty
 }
 
-func NewBlock(index uint64, data string) *Block {
+func NewBlock(index uint64, data string, difficulty uint64) *Block {
 	block := &Block{
-		Index:     index,
-		Timestamp: time.Now().Unix(),
-		Data:      data,
-		Nonce:     -1,
+		Index:      index,
+		Timestamp:  time.Now().Unix(),
+		Data:       data,
+		Nonce:      -1,
+		Difficulty: difficulty,
 	}
 	return block
 }
@@ -31,11 +33,15 @@ func (b *Block) GetHash() string {
 	return b.Hash
 }
 
-func (b *Block) MineBlock(difficulty uint64) {
+func (b *Block) GetDifficulty() uint64 {
+	return b.Difficulty
+}
+
+func (b *Block) MineBlock() {
 	startTime := time.Now() // Record start time
 
 	var strBuilder strings.Builder
-	for i := uint64(0); i < difficulty; i++ {
+	for i := uint64(0); i < b.Difficulty; i++ {
 		strBuilder.WriteString("0")
 	}
 	str := strBuilder.String()
@@ -45,7 +51,7 @@ func (b *Block) MineBlock(difficulty uint64) {
 		b.Hash = b.calculateHash()
 		fmt.Printf("%s\r\r", hexDump(b.Hash))
 		if strings.HasPrefix(b.Hash, str) {
-			fmt.Println("\n*** BLOCK FOUND! ***\n\n")
+			fmt.Printf("\n*** BLOCK FOUND! ***\n\n")
 			break
 		}
 	}
@@ -55,8 +61,6 @@ func (b *Block) MineBlock(difficulty uint64) {
 	fmt.Println("Block mined:", b.Hash)
 	fmt.Println("Nonce found:", b.Nonce)
 	fmt.Printf("Time taken to mine the block: %s\n", elapsed)
-
-	time.Sleep(2 * time.Second) // This line might not be necessary unless you have a specific reason to keep it
 }
 
 func (b *Block) calculateHash() string {

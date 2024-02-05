@@ -7,24 +7,22 @@ import (
 )
 
 type Blockchain struct {
-	Chain      []Block `json:"chain"`
-	Difficulty uint64  `json:"difficulty"`
+	Chain []Block `json:"chain"`
 }
 
 func NewBlockchain(difficulty uint64) *Blockchain {
 	blockchain := &Blockchain{
-		Chain:      make([]Block, 0),
-		Difficulty: difficulty,
+		Chain: make([]Block, 0),
 	}
-	genesisBlock := NewBlock(0, "Genesis Block")
+	genesisBlock := NewBlock(0, "Genesis Block", difficulty)
 	blockchain.Chain = append(blockchain.Chain, *genesisBlock)
 	return blockchain
 }
 
 func (bc *Blockchain) AddBlock(data string) {
-	newBlock := NewBlock(uint64(len(bc.Chain)), data)
+	newBlock := NewBlock(uint64(len(bc.Chain)), data, bc.GetLastBlock().Difficulty)
 	newBlock.PreviousHash = bc.GetLastBlock().GetHash()
-	newBlock.MineBlock(bc.Difficulty)
+	newBlock.MineBlock()
 	bc.Chain = append(bc.Chain, *newBlock)
 }
 
