@@ -15,6 +15,7 @@ func NewBlockchain(difficulty uint64) *Blockchain {
 		Chain: make([]Block, 0),
 	}
 	genesisBlock := NewBlock(0, "Genesis Block", difficulty)
+	genesisBlock.Hash = genesisBlock.calculateHash()
 	blockchain.Chain = append(blockchain.Chain, *genesisBlock)
 	return blockchain
 }
