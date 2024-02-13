@@ -7,7 +7,7 @@ import (
 // TestNewBlockchain tests the NewBlockchain function.
 func TestNewBlockchain(t *testing.T) {
 	difficulty := uint64(1)
-	blockchain := NewBlockchain(difficulty)
+	blockchain := NewBlockchain(difficulty, 2)
 
 	if len(blockchain.Chain) != 1 {
 		t.Errorf("NewBlockchain should start with one genesis block, got %d", len(blockchain.Chain))
@@ -20,7 +20,7 @@ func TestNewBlockchain(t *testing.T) {
 
 // TestAddBlock tests the AddBlock method of Blockchain.
 func TestAddBlock(t *testing.T) {
-	blockchain := NewBlockchain(1)
+	blockchain := NewBlockchain(1, 2)
 	blockchain.AddBlock("Test Block")
 
 	if len(blockchain.Chain) != 2 {
@@ -38,7 +38,7 @@ func TestAddBlock(t *testing.T) {
 
 // TestGetLastBlock tests the GetLastBlock method of Blockchain.
 func TestGetLastBlock(t *testing.T) {
-	blockchain := NewBlockchain(1)
+	blockchain := NewBlockchain(1, 2)
 	lastBlock := blockchain.GetLastBlock()
 
 	if lastBlock == nil {
@@ -61,7 +61,7 @@ func TestGetLastBlock(t *testing.T) {
 
 // TestBlockchainValidity tests the overall validity of the blockchain.
 func TestBlockchainValidity(t *testing.T) {
-	blockchain := NewBlockchain(1)
+	blockchain := NewBlockchain(1, 2)
 	blockchain.AddBlock("Block 1")
 	blockchain.AddBlock("Block 2")
 

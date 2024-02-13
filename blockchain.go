@@ -2,29 +2,43 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 )
 
 type Blockchain struct {
-	Chain []Block `json:"chain"`
+	Chain                []Block `json:"chain"`
+	difficultyAdjustment int64
+	avgTimeDuration      uint64
 }
 
-func NewBlockchain(difficulty uint64) *Blockchain {
+func NewBlockchain(difficulty uint64, avgTimeDuration uint64) *Blockchain {
 	blockchain := &Blockchain{
-		Chain: make([]Block, 0),
+		Chain:           make([]Block, 0),
+		avgTimeDuration: avgTimeDuration,
 	}
-	genesisBlock := NewBlock(0, "Genesis Block", difficulty)
+	genesisBlock := NewBlock(0, "Genesis Block", difficulty, avgTimeDuration)
 	genesisBlock.Hash = genesisBlock.calculateHash()
 	blockchain.Chain = append(blockchain.Chain, *genesisBlock)
 	return blockchain
 }
 
 func (bc *Blockchain) AddBlock(data string) {
-	newBlock := NewBlock(uint64(len(bc.Chain)), data, bc.GetLastBlock().Difficulty)
+	newBlock := NewBlock(uint64(len(bc.Chain)), data, uint64(int64(bc.GetLastBlock().Difficulty)+bc.difficultyAdjustment), bc.avgTimeDuration)
 	newBlock.PreviousHash = bc.GetLastBlock().GetHash()
-	newBlock.MineBlock()
+	bc.difficultyAdjustment = newBlock.MineBlock()
 	bc.Chain = append(bc.Chain, *newBlock)
+}
+
+func (bc *Blockchain) MineBlocks(avgTimeDuration uint64) {
+	var i = 1
+	for {
+		fmt.Printf("Mining block %d...\n", i)
+		bc.AddBlock(fmt.Sprintf("Block %d test data", i))
+		bc.SaveToFile("blockchain.json")
+		i++
+	}
 }
 
 func (bc *Blockchain) GetLastBlock() *Block {

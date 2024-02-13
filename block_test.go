@@ -12,7 +12,7 @@ import (
 // TestNewBlock tests the NewBlock function.
 func TestNewBlock(t *testing.T) {
 	data := "test data"
-	block := NewBlock(0, data, 1)
+	block := NewBlock(0, data, 1, 2)
 
 	if block.Data != data {
 		t.Errorf("NewBlock data = %s; want %s", block.Data, data)
@@ -29,7 +29,7 @@ func TestNewBlock(t *testing.T) {
 
 // TestMineBlock tests the MineBlock function.
 func TestMineBlock(t *testing.T) {
-	block := NewBlock(0, "test data", 1)
+	block := NewBlock(0, "test data", 1, 2)
 
 	block.MineBlock()
 
@@ -44,7 +44,7 @@ func TestMineBlock(t *testing.T) {
 
 // TestCalculateHash tests the calculateHash method.
 func TestCalculateHash(t *testing.T) {
-	block := NewBlock(0, "test data", 4)
+	block := NewBlock(0, "test data", 4, 2)
 	block.Nonce = 0
 	block.PreviousHash = "0000"
 	expectedHash := block.calculateHash()
@@ -62,7 +62,7 @@ func TestCalculateHash(t *testing.T) {
 
 // TestBlockImmutableTimestamp ensures that the timestamp of a block doesn't change.
 func TestBlockImmutableTimestamp(t *testing.T) {
-	block := NewBlock(0, "test data", 0)
+	block := NewBlock(0, "test data", 0, 2)
 	initialTimestamp := block.Timestamp
 
 	// Simulate some delay

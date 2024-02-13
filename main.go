@@ -13,27 +13,24 @@ func main() {
 	// Default difficulty
 	difficulty := uint64(6)
 
+	// Default average time duration (seconds)
+	avgTimeDuration := uint64(3)
+
 	if len(args) == 1 {
-		blockchain = NewBlockchain(difficulty)
+		blockchain = NewBlockchain(difficulty, avgTimeDuration)
 	} else if len(args) > 1 {
 		var err error
 		difficulty, err = strconv.ParseUint(args[1], 10, 32)
 		if err != nil {
 			fmt.Println("Invalid difficulty input. Using default difficulty.")
-			blockchain = NewBlockchain(difficulty)
+			blockchain = NewBlockchain(difficulty, avgTimeDuration)
 		} else {
 			blockchain, err = LoadBlockchainFromFile("blockchain.json")
 			if err != nil {
-				blockchain = NewBlockchain(difficulty)
+				blockchain = NewBlockchain(difficulty, avgTimeDuration)
 			}
 		}
 	}
 
-	var i = 1
-	for {
-		fmt.Printf("Mining block %d...\n", i)
-		blockchain.AddBlock(fmt.Sprintf("Block %d test data", i))
-		blockchain.SaveToFile("blockchain.json")
-		i++
-	}
+	blockchain.MineBlocks(avgTimeDuration)
 }
